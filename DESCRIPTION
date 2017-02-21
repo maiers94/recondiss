@@ -1,11 +1,17 @@
 Package: recondiss
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Helper Package for economics disseration
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Author: person("Stephan", "Maier", email = "sm297@st-andrews.ac.uk", role =
+    c("aut", "cre"))
+Maintainer: Stephan Maier <sm297@st-andrews.ac.uk>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
+Imports:
+    e1071,
+    graphics,
+    stats,
+    openxlsx
