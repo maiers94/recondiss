@@ -1,3 +1,5 @@
+#'@importFrom openxlsx read.xlsx
+#'@importFrom graphics plot
 preprocessing <- function(){
   data <- read.xlsx("ds_new.xlsx",2)
   milan <- data[[1]]
@@ -32,7 +34,7 @@ sample.pre <- function(input){
 ma <- function(inp,l){
   output <- vector(length = (length(inp)-l))
   for(i in 1:(length(inp)-l)){
-    output[i] <- sum(inp[i:(i+len)])/l
+    output[i] <- sum(inp[i:(i+l)])/l
   }
   return(output)
 }
@@ -204,6 +206,8 @@ trader.alt <- function(sample,signal){
 }
 
 #buy and hold avg returns
+#'@importFrom graphics hist
+
 buyandhold <- function(sample,n){
   returns <- vector()
   i <- 1
@@ -221,6 +225,8 @@ buyandhold <- function(sample,n){
 }
 
 #summary, example of the trading rule macd(12,26,0)
+#'@importFrom graphics plot
+
 summary <-function() {
   sig <- macd.siggen(sample,26,12,rule2=FALSE)
   bh <- buyandhold(sample,10)
