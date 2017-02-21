@@ -1,17 +1,16 @@
-library(openxlsx)
-library(e1071)
-data <- read.xlsx("ds_new.xlsx",2)
-milan <- data[[1]]
-sandp.tsx <- data[[2]]
-dax <- data[[3]]
-dow <- data[[4]]
-nikkei <-data[[5]]
-#create a window of 2 years take 2013-2014
+preprocessing <- function(){
+  data <- read.xlsx("ds_new.xlsx",2)
+  milan <- data[[1]]
+  sandp.tsx <- data[[2]]
+  dax <- data[[3]]
+  dow <- data[[4]]
+  nikkei <-data[[5]]
+  #create a window of 2 years take 2013-2014
 
-sample <- dax[12523:13827]
-#2008 - 2012
-plot(sample,type="l")
-
+  sample <- dax[12523:13827]
+  #2008 - 2012
+  plot(sample,type="l")
+}
 sample.pre <- function(input){
   output <- input[1]
   cut <- 0
@@ -25,7 +24,7 @@ sample.pre <- function(input){
   return(output)
 }
 
-sample <- sample.pre(sample)
+#sample <- sample.pre(sample)
 
 
 
@@ -46,7 +45,7 @@ exp <- function(inp,l){
     cur <- output[i-1]
     output[i] <- (inp[i+l]-output[i-1])*alpha + output[i-1]
   }
-  
+
   return(output)
 }
 
@@ -77,7 +76,7 @@ macd.siggen <- function(input,n,m,rule1=TRUE,rule2=TRUE){
   if(cd[1]<0)pos <- FALSE
   if(cd[1]>e9[1])hi <- TRUE
   if(cd[1]<e9[1])hi <- FALSE
-  
+
   signals <- vector(length=length(input))
   #fill first n elements with 0, no signals are created before the index exists
   signals[1:(n+10)] <- rep(0,(n+10))
@@ -109,7 +108,7 @@ macd.siggen <- function(input,n,m,rule1=TRUE,rule2=TRUE){
           signals[index] <- 1
         }
     }
-    
+
     if(signals[index]!=1 && signals[index]!=-1){
       signals[index]<-0
     }
@@ -158,7 +157,7 @@ trader.alt <- function(sample,signal){
   short.open <- FALSE
   long.open <- FALSE
   hold.time <- vector()
-  
+
   while(i < length(signal)){
     #buy signal
     if(signal[i]==1){
@@ -184,7 +183,7 @@ trader.alt <- function(sample,signal){
       long.open <- FALSE
       hold.time <- c(hold.time,i-open.l)
     }
-    
+
     i <- i+1
   }
   if(long.open == TRUE){
@@ -200,7 +199,7 @@ trader.alt <- function(sample,signal){
   print(mean(hold.time))
   returns <- list(buy.returns,sell.returns,mean(hold.time))
   return(returns)
-  
+
   return(returns)
 }
 
@@ -211,7 +210,7 @@ buyandhold <- function(sample,n){
   while(i+n <= length(sample)){
     ret <- log(sample[i+n])-log(sample[i])
     returns <- c(returns,ret)
-    i <- i + n + 1 
+    i <- i + n + 1
   }
   # print(kurtosis(returns,1))
   # print(skewness(returns,1))
@@ -229,7 +228,7 @@ summary <-function() {
   plot(macd(sample,26,12),type="l")
   macd2 <- trader.alt(sample,sig)
   a <- buyandhold(sample,macd2[[3]])
-  
+
   print("B&H Avg Returns, Buy Strategy returns, Sell Startegy Returns, Strategy Returns")
   print(c(bh,mean(macd1[[1]]),mean(macd1[[2]]),mean(c(macd1[[1]],-1*macd1[[2]]))))
   print("B&H Avg Returns, Buy Strategy + returns, Sell Startegy + Returns, Strategy + Returns")
