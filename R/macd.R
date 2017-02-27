@@ -40,9 +40,10 @@ macd.siggen <- function(input,n,m,rule1=TRUE,rule2=TRUE){
   e9 <- exp(cd,9)
   #cut macd to the right length
   cd <- cd[10:length(cd)]
-  print(length(e9))
-  print(length(cd))
+  #print(length(e9))
+  #print(length(cd))
   #find the current position of the MACD
+  #print(cd[1])
   if(cd[1]>0)pos <- TRUE
   if(cd[1]<0)pos <- FALSE
   if(cd[1]>e9[1])hi <- TRUE
