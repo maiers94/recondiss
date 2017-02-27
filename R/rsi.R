@@ -21,16 +21,19 @@ rsi <- function(input,n){
 }
 
 #'@export
-rsi.siggen <- function(input,n,rule1=TRUE){
+rsi.siggen <- function(input,n,rule1=FALSE,rule2=FALSE){
   rs <- rsi(input,n)
 
   #find the current position of the rsi
   if(rs[1]>50)pos <- TRUE
   if(rs[1]<50)pos <- FALSE
+  if(rs[1]<30)tpos <- -1
+  else if(rs[1]>70)tpos <- 1
+  else tpos <- 0
 
   signals <- vector(length=length(input))
   #fill first n elements with 0, no signals are created before the index exists
-  signals[1:(n-1)] <- rep(50,(n-1))
+  signals[1:(n-1)] <- rep(0,(n-1))
   i<-2
   #now run actual analysis
   while(i < length(rs)){
@@ -49,11 +52,27 @@ rsi.siggen <- function(input,n,rule1=TRUE){
         }
     }
 
+    if(rule2 == TRUE){
+      if(tpos==1){
+        if(rs[i]<70){
+          signals[index] <- -1
+        }
+      }
+      if(tpos==-1){
+        if(rs[i]>30){
+          signals[index] <- 1
+        }
+      }
+    }
+
     if(signals[index]!=1 && signals[index]!=-1){
       signals[index]<-0
     }
     if(rs[i]>50)pos <- TRUE
     if(rs[i]<50)pos <- FALSE
+    if(rs[i]<30)tpos <- -1
+    else if(rs[i]>70)tpos <- 1
+    else tpos <- 0
     i <- i+1
   }
   return(signals)

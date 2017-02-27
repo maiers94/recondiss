@@ -51,7 +51,7 @@ sample.pre <- function(input){
 
 trader <- macd.trader <- function(sample,signal){
   #cut the data to fit the signal
-  #data <- rev(rev(sample)[1:length(signal)])
+  #data <- rev(rev(sample)[1:length(signal)]) ** no longer necessary. signals now come in the correct length
   data<-sample
   i <- 1
   buy.returns <- vector()

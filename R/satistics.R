@@ -66,9 +66,9 @@ analyse.subperiod <- function(per,ind,dat,rsi=FALSE,macd=FALSE){
 
 
   if(rsi==TRUE){
-    rsi1sig <- rsi.siggen(cur,7)
-    rsi2sig <- rsi.siggen(cur,14)
-    rsi3sig <- rsi.siggen(cur,21)
+    rsi1sig <- rsi.siggen(cur,7,rule1=TRUE)
+    rsi2sig <- rsi.siggen(cur,14,rule1=TRUE)
+    rsi3sig <- rsi.siggen(cur,21,rule1=TRUE)
     rsi1 <- trader(cur, rsi1sig)
     rsi2 <- trader(cur, rsi2sig)
     rsi3 <- trader(cur, rsi3sig)
@@ -81,6 +81,12 @@ analyse.subperiod <- function(per,ind,dat,rsi=FALSE,macd=FALSE){
     print("##########")
     print("RSI(21,50) data:")
     output(rsi3)
+    rsi4sig <- rsi.siggen(cur,7,rule2=TRUE)
+    rsi5sig <- rsi.siggen(cur,14,rule2=TRUE)
+    rsi6sig <- rsi.siggen(cur,21,rule2=TRUE)
+    rsi4 <- trader(cur, rsi4sig)
+    rsi5 <- trader(cur, rsi5sig)
+    rsi6 <- trader(cur, rsi6sig)
   }
   return(0)
 }
