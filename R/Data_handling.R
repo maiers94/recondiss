@@ -1,18 +1,32 @@
 #'@importFrom openxlsx read.xlsx
 #'@importFrom graphics plot
 preprocessing <- function(){
-  data <- read.xlsx("ds_new.xlsx",2)
-  milan <- data[[1]]
-  sandp.tsx <- data[[2]]
-  dax <- data[[3]]
-  dow <- data[[4]]
-  nikkei <-data[[5]]
-  #create a window of 2 years take 2013-2014
+  data <- read.xlsx(system.file("extdata","ds_new.xlsx",package="recondiss"),2)
+  # milan <- data[[1]]
+  # sandp.tsx <- data[[2]]
+  # dax <- data[[3]]
+  # dow <- data[[4]]
+  # nikkei <-data[[5]]
+  #cut data into windows according to paper
+  for(i in 1:5){
+    #for each index
+    curdat <- data[[i]]
+    cur <- list("1"=curdat[1:1566],"2"=curdat[1567:3392],"3"=curdat[3393:4304],"4"=curdat[4305:5479],"5"=curdat[5480:6653])
+    nam <- paste("dat", i, sep = "")
+    for(j in 1:5){
+      #for each of the 5 periods
+      cur[[j]] <- sample.pre(cur[[j]])
+    }
+    assign(nam, cur)
 
-  sample <- dax[12523:13827]
-  #2008 - 2012
+  }
+
+  out <- list(dat1,dat2,dat3,dat4,dat5)
+
   plot(sample,type="l")
+  return(out)
 }
+
 sample.pre <- function(input){
   output <- input[1]
   cut <- 0
