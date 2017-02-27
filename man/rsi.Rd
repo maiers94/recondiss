@@ -6,6 +6,11 @@
 \usage{
 rsi(input, n)
 }
+\arguments{
+\item{input}{Input time series}
+
+\item{n}{length of RSI}
+}
 \description{
 A function to compute the relative strength index
 }

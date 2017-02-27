@@ -1,5 +1,6 @@
 #'@importFrom openxlsx read.xlsx
 #'@importFrom graphics plot
+#'@export
 preprocessing <- function(){
   data <- read.xlsx(system.file("extdata","ds_new.xlsx",package="recondiss"),2)
   # milan <- data[[1]]
@@ -13,28 +14,34 @@ preprocessing <- function(){
     curdat <- data[[i]]
     cur <- list("1"=curdat[1:1566],"2"=curdat[1567:3392],"3"=curdat[3393:4304],"4"=curdat[4305:5479],"5"=curdat[5480:6653])
     nam <- paste("dat", i, sep = "")
-    for(j in 1:5){
-      #for each of the 5 periods
-      cur[[j]] <- sample.pre(cur[[j]])
-    }
+     for(j in 1:5){
+       #for each of the 5 periods
+       cur[[j]] <- sample.pre(cur[[j]])
+     }
     assign(nam, cur)
 
   }
-
   out <- list(dat1,dat2,dat3,dat4,dat5)
 
-  plot(sample,type="l")
   return(out)
 }
+
 
 sample.pre <- function(input){
   output <- input[1]
   cut <- 0
   for(i in 2:length(input)){
-    if(input[i-1]!=input[i]){
-      output <- c(output,input[i])
+    if(!is.na(input[i])){
+      if(input[i-1]!=input[i]){
+        output <- c(output,input[i])
+      }
+      else cut <- cut + 1
     }
-    else cut <- cut +  1
+    else{
+      cut <- cut +  1
+      input[i]<- input[i-1]
+    }
+
   }
   print(c("cut input by",cut))
   return(output)
@@ -42,102 +49,6 @@ sample.pre <- function(input){
 
 #sample <- sample.pre(sample)
 
-
-
-#simple moving avg
-ma <- function(inp,l){
-  output <- vector(length = (length(inp)-l))
-  for(i in 1:(length(inp)-l)){
-    output[i] <- sum(inp[i:(i+l)])/l
-  }
-  return(output)
-}
-#exponential moving average
-exp <- function(inp,l){
-  output <- vector(length = (length(inp)-l))
-  output[1] <- sum(inp[1:l])/l
-  alpha <- 2/l
-  for(i in 2:(length(inp)-l)){
-    cur <- output[i-1]
-    output[i] <- (inp[i+l]-output[i-1])*alpha + output[i-1]
-  }
-
-  return(output)
-}
-
-#Moving Average Convergence-divergence
-macd <- function(data,n,m){
-  #n>m, in line with Chong,Ng (2014)
-  eman <- rev(exp(data,n))
-  emam <- rev(exp(data,m))
-  macd <- vector(length=length(eman))
-  for(i in 1:length(eman)){
-    macd[i] <- emam[i]-eman[i]
-  }
-  macd <- rev(macd)
-  return(macd)
-}
-
-#this generates the trading signals
-#use MACD(12,26,0) and MACD(12,26,9)
-macd.siggen <- function(input,n,m,rule1=TRUE,rule2=TRUE){
-  cd <- macd(input,n,m)
-  e9 <- exp(cd,9)
-  #cut macd to the right length
-  cd <- cd[10:length(cd)]
-  print(length(e9))
-  print(length(cd))
-  #find the current position of the MACD
-  if(cd[1]>0)pos <- TRUE
-  if(cd[1]<0)pos <- FALSE
-  if(cd[1]>e9[1])hi <- TRUE
-  if(cd[1]<e9[1])hi <- FALSE
-
-  signals <- vector(length=length(input))
-  #fill first n elements with 0, no signals are created before the index exists
-  signals[1:(n+10)] <- rep(0,(n+10))
-  i<-2
-  #now run actual analysis
-  while(i < length(cd)){
-    #RULE1 Buy signal if macd crosses zero from below/sell if from above
-    #RULE2 Buy signal if macd crosses em(9) from below/sell from above
-    index <- i+9+n
-    if(rule1 == TRUE){
-      if(pos == TRUE){
-        if(cd[i]<0){
-          signals[index] <- -1
-        }
-      }
-      if(pos == FALSE)
-        if(cd[i]>0){
-          signals[index] <- 1
-        }
-    }
-    if(rule2 == TRUE){
-      if(hi == TRUE){
-        if(cd[i]<e9[i]){
-          signals[index] <- -1
-        }
-      }
-      if(hi == FALSE)
-        if(cd[i]>e9[i]){
-          signals[index] <- 1
-        }
-    }
-
-    if(signals[index]!=1 && signals[index]!=-1){
-      signals[index]<-0
-    }
-    if(cd[i]>0)pos <- TRUE
-    if(cd[i]<0)pos <- FALSE
-    if(cd[i]>e9[1])hi <- TRUE
-    if(cd[i]<e9[1])hi <- FALSE
-    i <- i+1
-    }
-  return(signals)
-}
-
-#trading average returns
 macd.trader <- function(sample,signal){
   #cut the data to fit the signal
   #data <- rev(rev(sample)[1:length(signal)])
@@ -164,6 +75,47 @@ macd.trader <- function(sample,signal){
   return(returns)
 }
 
+
+
+#buy and hold avg returns
+#'@importFrom graphics hist
+#'@export
+buyandhold <- function(sample,n){
+  returns <- vector()
+  i <- 1
+  while(i+n <= length(sample)){
+    ret <- log(sample[i+n])-log(sample[i])
+    returns <- c(returns,ret)
+    i <- i + n + 1
+  }
+  # print(kurtosis(returns,1))
+  # print(skewness(returns,1))
+  # print(sd(returns))
+  # print(length(returns))
+  hist(returns)
+  return(returns)
+}
+
+#summary, example of the trading rule macd(12,26,0)
+#'@importFrom graphics plot
+
+summary <-function() {
+  sig <- macd.siggen(sample,26,12,rule2=FALSE)
+  bh <- buyandhold(sample,10)
+  macd1 <- macd.trader(sample,sig)
+  plot(macd(sample,26,12),type="l")
+  macd2 <- trader.alt(sample,sig)
+  a <- buyandhold(sample,macd2[[3]])
+
+  print("B&H Avg Returns, Buy Strategy returns, Sell Startegy Returns, Strategy Returns")
+  print(c(bh,mean(macd1[[1]]),mean(macd1[[2]]),mean(c(macd1[[1]],-1*macd1[[2]]))))
+  print("B&H Avg Returns, Buy Strategy + returns, Sell Startegy + Returns, Strategy + Returns")
+  print(c(a,mean(macd2[[1]]),mean(macd2[[2]]),mean(c(macd2[[1]],-1*macd2[[2]]))))
+}
+
+#####################
+
+#old
 trader.alt <- function(sample,signal){
   position <- 0
   data<-sample
@@ -219,40 +171,3 @@ trader.alt <- function(sample,signal){
   return(returns)
 }
 
-#buy and hold avg returns
-#'@importFrom graphics hist
-
-buyandhold <- function(sample,n){
-  returns <- vector()
-  i <- 1
-  while(i+n <= length(sample)){
-    ret <- log(sample[i+n])-log(sample[i])
-    returns <- c(returns,ret)
-    i <- i + n + 1
-  }
-  # print(kurtosis(returns,1))
-  # print(skewness(returns,1))
-  # print(sd(returns))
-  # print(length(returns))
-  hist(returns)
-  return(mean(returns))
-}
-
-#summary, example of the trading rule macd(12,26,0)
-#'@importFrom graphics plot
-
-summary <-function() {
-  sig <- macd.siggen(sample,26,12,rule2=FALSE)
-  bh <- buyandhold(sample,10)
-  macd1 <- macd.trader(sample,sig)
-  plot(macd(sample,26,12),type="l")
-  macd2 <- trader.alt(sample,sig)
-  a <- buyandhold(sample,macd2[[3]])
-
-  print("B&H Avg Returns, Buy Strategy returns, Sell Startegy Returns, Strategy Returns")
-  print(c(bh,mean(macd1[[1]]),mean(macd1[[2]]),mean(c(macd1[[1]],-1*macd1[[2]]))))
-  print("B&H Avg Returns, Buy Strategy + returns, Sell Startegy + Returns, Strategy + Returns")
-  print(c(a,mean(macd2[[1]]),mean(macd2[[2]]),mean(c(macd2[[1]],-1*macd2[[2]]))))
-}
-
-#####################

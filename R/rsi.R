@@ -1,6 +1,7 @@
 #'A function to compute the relative strength index
 #'
-#'
+#'@param input Input time series
+#'@param n length of RSI
 rsi <- function(input,n){
   output <- vector(length=(length(input)-n))
   for(i in n:length(input)){
@@ -18,6 +19,7 @@ rsi <- function(input,n){
     return(output)
 }
 
+#'@export
 rsi.siggen <- function(input,n,rule1=TRUE){
   rs <- rsi(input,n)
 
