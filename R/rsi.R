@@ -2,21 +2,22 @@
 #'
 #'@param input Input time series
 #'@param n length of RSI
+#'@export
 rsi <- function(input,n){
   output <- vector(length=(length(input)-n))
-  for(i in n:length(input)){
+  for(t in n:length(input)){
     differences <- vector(length=(n-1))
     nulls <- vector(length=(n-1))
     for(j in 1:(n-2)){
-      differences[j] <- input[i-j]-input[i-j-1]
-      if(input[i-j]-input[i-j-1]>0)nulls[j] <- 1
-      if(input[i-j]-input[i-j-1]<=0)nulls[j] <- 0
+      differences[j] <- input[t-j]-input[t-j-1]
+      if(input[t-j]-input[t-j-1]>0)nulls[j] <- 1
+      if(input[t-j]-input[t-j-1]<=0)nulls[j] <- 0
     }
     num <- differences*nulls
     den <- abs(differences)
-    output[i-n+1] <- 100*sum(num)/sum(den)
+    output[t-n+1] <- 100*sum(num)/sum(den)
   }
-    return(output)
+  return(output)
 }
 
 #'@export

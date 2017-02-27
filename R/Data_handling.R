@@ -49,7 +49,7 @@ sample.pre <- function(input){
 
 #sample <- sample.pre(sample)
 
-macd.trader <- function(sample,signal){
+trader <- macd.trader <- function(sample,signal){
   #cut the data to fit the signal
   #data <- rev(rev(sample)[1:length(signal)])
   data<-sample
