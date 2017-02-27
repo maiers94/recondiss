@@ -1,3 +1,6 @@
+#'A function to compute the relative strength index
+#'
+#'
 rsi <- function(input,n){
   output <- vector(length=(length(input)-n))
   for(i in n:length(input)){
@@ -17,11 +20,11 @@ rsi <- function(input,n){
 
 rsi.siggen <- function(input,n,rule1=TRUE){
   rs <- rsi(input,n)
-  
+
   #find the current position of the rsi
   if(rs[1]>50)pos <- TRUE
   if(rs[1]<50)pos <- FALSE
-  
+
   signals <- vector(length=length(input))
   #fill first n elements with 0, no signals are created before the index exists
   signals[1:(n-1)] <- rep(50,(n-1))
@@ -29,7 +32,7 @@ rsi.siggen <- function(input,n,rule1=TRUE){
   #now run actual analysis
   while(i < length(rs)){
     #RULE1 Buy signal if rsi crosses centreline
-    
+
     index <- i+n-1
     if(rule1 == TRUE){
       if(pos == TRUE){
@@ -42,7 +45,7 @@ rsi.siggen <- function(input,n,rule1=TRUE){
           signals[index] <- 1
         }
     }
-    
+
     if(signals[index]!=1 && signals[index]!=-1){
       signals[index]<-0
     }
