@@ -89,8 +89,8 @@ macd.siggen <- function(input,n,m,rule1=TRUE,rule2=TRUE){
     }
     if(cd[i]>0)pos <- TRUE
     if(cd[i]<0)pos <- FALSE
-    if(cd[i]>e9[1])hi <- TRUE
-    if(cd[i]<e9[1])hi <- FALSE
+    if(cd[i]>e9[i])hi <- TRUE
+    if(cd[i]<e9[i])hi <- FALSE
     i <- i+1
   }
   return(signals)
