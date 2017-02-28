@@ -33,9 +33,9 @@ analyse.subperiod <- function(per,ind,dat,lrsi1=FALSE,macd=FALSE,lrsi2=FALSE){
     print(c("buy>0 / sell>0: ",br," / ",sr))
     bminusst <- teststat(var[[1]],var[[2]])
     bminuss <- mean(var[[1]]) - mean(var[[2]])
-    dftot <- length(var[[2]]) + length(var[[2]]) - 1
+    dftot <- length(var[[1]]) + length(var[[2]]) - 1
     print(c("Buy-Sell Strategy: (t-value)",bminuss,bminusst))
-    print(c("p-value:",pt(-abs(bt),dftot)))
+    print(c("p-value:",pt(-abs(bminusst),dftot)))
     return(0)
   }
 
