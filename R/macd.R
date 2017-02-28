@@ -7,6 +7,7 @@ ma <- function(inp,l){
   return(output)
 }
 #exponential moving average
+#'@export
 exp <- function(inp,l){
   output <- vector(length = (length(inp)-l))
   output[1] <- sum(inp[1:l])/l
@@ -20,6 +21,7 @@ exp <- function(inp,l){
 }
 
 #Moving Average Convergence-divergence
+#'@export
 macd <- function(data,n,m){
   #n>m, in line with Chong,Ng (2014)
   eman <- rev(exp(data,n))
@@ -52,6 +54,7 @@ macd.siggen <- function(input,n,m,rule1=TRUE,rule2=TRUE){
   signals <- vector(length=length(input))
   #fill first n elements with 0, no signals are created before the index exists
   signals[1:(n+10)] <- rep(0,(n+10))
+
   i<-2
   #now run actual analysis
   while(i < length(cd)){

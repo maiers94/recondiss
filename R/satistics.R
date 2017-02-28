@@ -12,7 +12,7 @@ teststat <- function(x,y){
 #'@importFrom e1071 kurtosis
 #'@importFrom e1071 skewness
 #'@export
-analyse.subperiod <- function(per,ind,dat,rsi1=FALSE,macd=FALSE,rsi2=FALSE){
+analyse.subperiod <- function(per,ind,dat,lrsi1=FALSE,macd=FALSE,lrsi2=FALSE){
   ratio <- function(returns){
     pos <- length(returns[returns>0])
     ratio <- pos/length(returns)
@@ -67,7 +67,7 @@ analyse.subperiod <- function(per,ind,dat,rsi1=FALSE,macd=FALSE,rsi2=FALSE){
   }
 
 
-  if(rsi1==TRUE){
+  if(lrsi1==TRUE){
     rsi1sig <- rsi.siggen(cur,7,rule1=TRUE)
     rsi2sig <- rsi.siggen(cur,14,rule1=TRUE)
     rsi3sig <- rsi.siggen(cur,21,rule1=TRUE)
@@ -84,7 +84,7 @@ analyse.subperiod <- function(per,ind,dat,rsi1=FALSE,macd=FALSE,rsi2=FALSE){
     print("RSI(21,50) data:")
     output(rsi3)
   }
-  if(rsi2==TRUE){
+  if(lrsi2==TRUE){
     rsi4sig <- rsi.siggen(cur,7,rule2=TRUE)
     rsi5sig <- rsi.siggen(cur,14,rule2=TRUE)
     rsi6sig <- rsi.siggen(cur,21,rule2=TRUE)
