@@ -48,6 +48,8 @@ analyse.subperiod <- function(per,ind,dat,rsi1=FALSE,macd=FALSE,rsi2=FALSE){
   print(sd(bah))
   print(skewness(bah))
   print(kurtosis(bah))
+
+  hist(bah, main="10-day Unconditional Returns",xlab="returns",breaks=10)
   print("##########")
 
   if(macd==TRUE){
@@ -100,6 +102,16 @@ analyse.subperiod <- function(per,ind,dat,rsi1=FALSE,macd=FALSE,rsi2=FALSE){
     output(rsi6)
   }
   return(0)
+}
+
+#'@export
+wholeperiod <- function(a){
+  b <- a[[1]]
+  for(i in 2:5){
+    b <- c(b,a[[i]])
+  }
+  b <- list(list(b))
+  return(b)
 }
 
 trading.costs <- function(returns,p){}
