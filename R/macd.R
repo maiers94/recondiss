@@ -7,7 +7,7 @@ ma <- function(inp,l){
   return(output)
 }
 #exponential moving average
-#'@export
+
 exp <- function(inp,l){
   output <- vector(length = (length(inp)-l))
   output[1] <- sum(inp[1:l])/l

@@ -2,7 +2,6 @@
 
 export(analyse.subperiod)
 export(buyandhold)
-export(exp)
 export(macd)
 export(macd.siggen)
 export(preprocessing)
