@@ -23,22 +23,18 @@ rsi <- function(input,n){
 #'@export
 rsi.siggen <- function(input,n,rule1=FALSE,rule2=FALSE){
   rs <- rsi(input,n)
-
   #find the current position of the rsi
   if(rs[1]>50)pos <- TRUE
   if(rs[1]<50)pos <- FALSE
   if(rs[1]<30)tpos <- -1
   else if(rs[1]>70)tpos <- 1
   else tpos <- 0
-
   signals <- vector(length=length(input))
   #fill first n elements with 0, no signals are created before the index exists
   signals[1:(n-1)] <- rep(0,(n-1))
   i<-2
-  #now run actual analysis
   while(i < length(rs)){
     #RULE1 Buy signal if rsi crosses centreline
-
     index <- i+n-1
     if(rule1 == TRUE){
       if(pos == TRUE){
@@ -51,7 +47,6 @@ rsi.siggen <- function(input,n,rule1=FALSE,rule2=FALSE){
           signals[index] <- 1
         }
     }
-
     if(rule2 == TRUE){
       if(tpos==1){
         if(rs[i]<70){
@@ -64,7 +59,6 @@ rsi.siggen <- function(input,n,rule1=FALSE,rule2=FALSE){
         }
       }
     }
-
     if(signals[index]!=1 && signals[index]!=-1){
       signals[index]<-0
     }

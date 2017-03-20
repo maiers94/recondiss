@@ -82,7 +82,6 @@ macd.siggen <- function(input,n,m,rule1=TRUE,rule2=TRUE){
           signals[index] <- 1
         }
     }
-
     if(signals[index]!=1 && signals[index]!=-1){
       signals[index]<-0
     }
@@ -94,6 +93,3 @@ macd.siggen <- function(input,n,m,rule1=TRUE,rule2=TRUE){
   }
   return(signals)
 }
-
-
-

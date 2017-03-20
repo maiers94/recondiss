@@ -42,7 +42,6 @@ sample.pre <- function(input){
   return(output)
 }
 
-
 trader <- macd.trader <- function(sample,signal){
   data<-sample
   i <- 1
