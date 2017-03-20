@@ -2,6 +2,9 @@
 teststat <- function(x,y){
   mux <- mean(x)
   muy <- mean(y)
+  varx <- var(x)
+  vary <- var(y)
+  #totvar <- ((length(x)-1)*varx+(length(y)-1)*vary)/(length(x)+length(y)-2)
   totvar <- var(c(x,y))
   nx <- length(x)
   ny <- length(y)
@@ -70,7 +73,7 @@ analyse.subperiod <- function(per,ind,dat,lrsi1=FALSE,macd=FALSE,lrsi2=FALSE){
   if(lrsi1==TRUE){
     rsi1sig <- rsi.siggen(cur,7,rule1=TRUE)
     rsi2sig <- rsi.siggen(cur,14,rule1=TRUE)
-    rsi3sig <- rsi.siggen(cur,21,rule1=TRUE)
+    rsi3sig <- rsi.siggen(cur,26,rule1=TRUE)
     rsi1 <- trader(cur, rsi1sig)
     rsi2 <- trader(cur, rsi2sig)
     rsi3 <- trader(cur, rsi3sig)
@@ -81,7 +84,7 @@ analyse.subperiod <- function(per,ind,dat,lrsi1=FALSE,macd=FALSE,lrsi2=FALSE){
     print("RSI(14,50) data:")
     output(rsi2)
     print("##########")
-    print("RSI(21,50) data:")
+    print("RSI(26,50) data:")
     output(rsi3)
   }
   if(lrsi2==TRUE){
