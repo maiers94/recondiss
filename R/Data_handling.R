@@ -3,11 +3,6 @@
 #'@export
 preprocessing <- function(){
   data <- read.xlsx(system.file("extdata","ds_new.xlsx",package="recondiss"),2)
-  # milan <- data[[1]]
-  # sandp.tsx <- data[[2]]
-  # dax <- data[[3]]
-  # dow <- data[[4]]
-  # nikkei <-data[[5]]
   #cut data into windows according to paper
   for(i in 1:5){
     #for each index
@@ -47,11 +42,8 @@ sample.pre <- function(input){
   return(output)
 }
 
-#sample <- sample.pre(sample)
 
 trader <- macd.trader <- function(sample,signal){
-  #cut the data to fit the signal
-  #data <- rev(rev(sample)[1:length(signal)]) ** no longer necessary. signals now come in the correct length
   data<-sample
   i <- 1
   buy.returns <- vector()
@@ -88,10 +80,6 @@ buyandhold <- function(sample,n){
     returns <- c(returns,ret)
     i <- i + n + 1
   }
-  # print(kurtosis(returns,1))
-  # print(skewness(returns,1))
-  # print(sd(returns))
-  # print(length(returns))
   hist(returns)
   return(returns)
 }
@@ -99,75 +87,5 @@ buyandhold <- function(sample,n){
 #summary, example of the trading rule macd(12,26,0)
 #'@importFrom graphics plot
 
-summary <-function() {
-  sig <- macd.siggen(sample,26,12,rule2=FALSE)
-  bh <- buyandhold(sample,10)
-  macd1 <- macd.trader(sample,sig)
-  plot(macd(sample,26,12),type="l")
-  macd2 <- trader.alt(sample,sig)
-  a <- buyandhold(sample,macd2[[3]])
-
-  print("B&H Avg Returns, Buy Strategy returns, Sell Startegy Returns, Strategy Returns")
-  print(c(bh,mean(macd1[[1]]),mean(macd1[[2]]),mean(c(macd1[[1]],-1*macd1[[2]]))))
-  print("B&H Avg Returns, Buy Strategy + returns, Sell Startegy + Returns, Strategy + Returns")
-  print(c(a,mean(macd2[[1]]),mean(macd2[[2]]),mean(c(macd2[[1]],-1*macd2[[2]]))))
-}
 
 #####################
-
-#old
-trader.alt <- function(sample,signal){
-  position <- 0
-  data<-sample
-  i <- 1
-  buy.returns <- vector()
-  sell.returns <- vector()
-  short.open <- FALSE
-  long.open <- FALSE
-  hold.time <- vector()
-
-  while(i < length(signal)){
-    #buy signal
-    if(signal[i]==1){
-      open.l <- i
-      long.open <- TRUE
-      position <- "long"
-    }
-    #sell signal
-    if(signal[i]==-1){
-      open.s <- i
-      short.open <- TRUE
-      position <- "short"
-    }
-    if(short.open ==TRUE && position == "long"){
-      sell.ret <- log(data[i])-log(data[open.s])
-      sell.returns <- c(sell.returns,sell.ret)
-      short.open <- FALSE
-      hold.time <- c(hold.time,i-open.s)
-    }
-    if(long.open ==TRUE && position == "short"){
-      buy.ret <- log(data[i])-log(data[open.l])
-      buy.returns <- c(buy.returns,buy.ret)
-      long.open <- FALSE
-      hold.time <- c(hold.time,i-open.l)
-    }
-
-    i <- i+1
-  }
-  if(long.open == TRUE){
-    buy.ret <- log(data[length(signal)])-log(data[open.l])
-    buy.returns <- c(buy.returns,buy.ret)
-    long.open <- FALSE
-  }
-  if(short.open == TRUE){
-    sell.ret <- log(data[length(signal)])-log(data[open.s])
-    sell.returns <- c(sell.returns,sell.ret)
-    long.open <- FALSE
-  }
-  print(mean(hold.time))
-  returns <- list(buy.returns,sell.returns,mean(hold.time))
-  return(returns)
-
-  return(returns)
-}
-
