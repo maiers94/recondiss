@@ -84,8 +84,3 @@ buyandhold <- function(sample,n){
   return(returns)
 }
 
-#summary, example of the trading rule macd(12,26,0)
-#'@importFrom graphics plot
-
-
-#####################
