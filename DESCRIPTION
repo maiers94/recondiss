@@ -1,7 +1,7 @@
 Package: recondiss
 Type: Package
 Title: Helper Package for economics disseration
-Version: 0.0.0.9000
+Version: 1.0.0
 Author: person("Stephan", "Maier", email = "sm297@st-andrews.ac.uk", role =
     c("aut", "cre"))
 Maintainer: Stephan Maier <sm297@st-andrews.ac.uk>
